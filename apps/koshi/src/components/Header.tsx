@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { ModeToggle } from "@cire/ui/components/mode-toggle";
 
 // this is getting deleted
 export default function Header() {
@@ -9,6 +10,7 @@ export default function Header() {
           <Link to="/">Home</Link>
           <Link to="/auth/sign-in">Sign in</Link>
           <Link to="/auth/sign-up">Sign up</Link>
+          <ModeToggle />
         </div>
       </nav>
     </header>
