@@ -13,8 +13,6 @@ import { Checkbox } from "@cire/ui/components/checkbox";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { signIn } from "@/lib/better-auth";
-import { Link } from "@tanstack/react-router";
-import { toast } from "sonner";
 
 export function SignIn() {
   //TODO: this should be a form
@@ -93,7 +91,7 @@ export function SignIn() {
                     setLoading(false);
                   },
                   onError: (ctx) => {
-                    toast(ctx.error);
+                    //toast(ctx.error);
                   },
                 },
               );
@@ -111,13 +109,13 @@ export function SignIn() {
         <div className="flex justify-center w-full border-t py-4">
           <p className="text-center text-xs text-neutral-500">
             Powered by{" "}
-            {/*<Link
+            <a
               href="https://better-auth.com"
               className="underline"
               target="_blank"
             >
               <span className="dark:text-orange-200/90">better-auth.</span>
-            </Link>*/}
+            </a>
           </p>
         </div>
       </CardFooter>
