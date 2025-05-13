@@ -5,11 +5,12 @@ import { RouterProvider, createRouter } from "@tanstack/react-router";
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
 
-import "./styles.css";
+import "@cire/ui/index.css";
 import reportWebVitals from "./reportWebVitals.ts";
+import { ApplicationProviders } from "./lib/providers.tsx";
 
 // Create a new router instance
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   context: {},
   defaultPreload: "intent",
@@ -31,9 +32,11 @@ const rootElement = document.getElementById("app");
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>,
+    <ApplicationProviders>
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    </ApplicationProviders>,
   );
 }
 
