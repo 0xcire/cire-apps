@@ -1,5 +1,14 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@source "../../../apps/**/*.{ts,tsx}";
+@source "../../../components/**/*.{ts,tsx}";
+@source "../**/*.{ts,tsx}";
+
+@font-face {
+  font-family: "Merriweather";
+  display: swap;
+  src: url("../public/Merriweather.ttf");
+}
 
 @custom-variant dark (&:is(.dark *));
 
@@ -42,15 +51,20 @@
   --radius: 0.425rem;
   --shadow-2xs: 3px 3px 2px 0px hsl(88 22% 35% / 0.07);
   --shadow-xs: 3px 3px 2px 0px hsl(88 22% 35% / 0.07);
-  --shadow-sm: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-sm:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 1px 2px -1px hsl(88 22% 35% / 0.15);
-  --shadow: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 1px 2px -1px hsl(88 22% 35% / 0.15);
-  --shadow-md: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-md:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 2px 4px -1px hsl(88 22% 35% / 0.15);
-  --shadow-lg: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-lg:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 4px 6px -1px hsl(88 22% 35% / 0.15);
-  --shadow-xl: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-xl:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 8px 10px -1px hsl(88 22% 35% / 0.15);
   --shadow-2xl: 3px 3px 2px 0px hsl(88 22% 35% / 0.38);
 }
@@ -94,15 +108,20 @@
   --radius: 0.425rem;
   --shadow-2xs: 3px 3px 2px 0px hsl(88 22% 35% / 0.07);
   --shadow-xs: 3px 3px 2px 0px hsl(88 22% 35% / 0.07);
-  --shadow-sm: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-sm:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 1px 2px -1px hsl(88 22% 35% / 0.15);
-  --shadow: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 1px 2px -1px hsl(88 22% 35% / 0.15);
-  --shadow-md: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-md:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 2px 4px -1px hsl(88 22% 35% / 0.15);
-  --shadow-lg: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-lg:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 4px 6px -1px hsl(88 22% 35% / 0.15);
-  --shadow-xl: 3px 3px 2px 0px hsl(88 22% 35% / 0.15),
+  --shadow-xl:
+    3px 3px 2px 0px hsl(88 22% 35% / 0.15),
     3px 8px 10px -1px hsl(88 22% 35% / 0.15);
   --shadow-2xl: 3px 3px 2px 0px hsl(88 22% 35% / 0.38);
 }

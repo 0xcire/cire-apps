@@ -58,12 +58,13 @@ const variantToElement: Record<
   small: "small",
   muted: "p",
 };
+
 export const Typography = ({
   variant,
   children,
   className,
 }: TypographyProps) => {
-  const Comp = variantToElement[variant] || "p";
+  const Comp = variantToElement[variant];
 
   return (
     <Comp className={twMerge(classValueMap[variant], className)}>
