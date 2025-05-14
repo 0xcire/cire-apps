@@ -1,5 +1,5 @@
 import { PageWrapper } from "@/components/page/page-wrapper";
-import { SignOut } from "@/features/auth/components/sign-out";
+import { SignOutButton } from "@/features/auth/components/sign-out-btn";
 import { useSession } from "@/lib/better-auth";
 import { Typography } from "@cire/ui/components/typography";
 import { createFileRoute } from "@tanstack/react-router";
@@ -19,7 +19,7 @@ function App() {
       {user && (
         <>
           <div>hello {user.name}</div>
-          <SignOut />
+          <SignOutButton />
         </>
       )}
     </PageWrapper>

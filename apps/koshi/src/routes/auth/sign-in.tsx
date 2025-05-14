@@ -1,5 +1,5 @@
 import { PageWrapper } from "@/components/page/page-wrapper";
-import { SignIn } from "@/features/auth/components/sign-in";
+import { SignInFormCard } from "@/features/auth/components/sign-in";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/auth/sign-in")({
@@ -9,7 +9,7 @@ export const Route = createFileRoute("/auth/sign-in")({
 function RouteComponent() {
   return (
     <PageWrapper>
-      <SignIn />
+      <SignInFormCard />
     </PageWrapper>
   );
 }
