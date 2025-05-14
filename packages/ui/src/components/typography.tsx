@@ -1,4 +1,5 @@
 // reference: https://ui.shadcn.com/docs/components/typography
+import { ReactNode } from "react";
 import { JSX } from "react/jsx-runtime";
 import { twMerge } from "tailwind-merge";
 
@@ -17,7 +18,7 @@ type TypographyProps = {
     | "large"
     | "small"
     | "muted";
-  children: string | Array<string>;
+  children: ReactNode;
   className?: string;
 };
 
