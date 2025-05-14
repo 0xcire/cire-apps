@@ -10,34 +10,87 @@ import {
 } from "@cire/ui/components/card";
 import { Input } from "@cire/ui/components/input";
 import { Label } from "@cire/ui/components/label";
-import { Loader2, X } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { signUp } from "@/lib/better-auth";
 import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { Typography } from "@cire/ui/components/typography";
 
-export function SignUp() {
-  // TODO: clean this up. kind of messy. use react 19 standards. also upload as gist as better-auth examples which these currently are are frankly not good
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirmation, setPasswordConfirmation] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+const signUpSchema = z.object({
+  firstName: z.string().min(1),
+  lastName: z.string().min(1),
+  email: z.string().email(),
+  password: z.string().min(1),
+  confirmPassword: z.string().min(1)
+})
+.refine(({ password, confirmPassword }) => password === confirmPassword, {
+  path: ["confirmPassword"],
+  message: 'Passwords do not match'
+})
+.transform(({ confirmPassword, ...data }) => data)
+
+type SignUpData = z.infer<typeof signUpSchema>;
+
+
+// TODO: lot's of commented code related to image upload. need to establish s3 connection or configure minio on server
+export function SignUpFormCard() {
+  // const [image, setImage] = useState<File | null>(null);
+  // const [imagePreview, setImagePreview] = useState<string | null>(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: "",
+      password: "",
+      confirmPassword: ""
     }
-  };
+  })
+
+  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0];
+  //   if (file) {
+  //     setImage(file);
+  //     const reader = new FileReader();
+  //     reader.onloadend = () => {
+  //       setImagePreview(reader.result as string);
+  //     };
+  //     reader.readAsDataURL(file);
+  //   }
+  // };
+
+  const onSubmit = async (data: SignUpData) => {
+    await signUp.email({
+      ...data,
+      name: `${data.firstName} ${data.lastName}`,
+      // image: image ? await convertImageToBase64(image) : "",
+      callbackURL: `${import.meta.env.VITE_CLIENT_BASE_URL}`,
+      fetchOptions: {
+        onResponse: () => {
+          setLoading(false);
+        },
+        onRequest: () => {
+          setLoading(true);
+        },
+        onError: (ctx) => {
+          toast.error(ctx.error.message);
+        },
+        onSuccess: async () => {
+          navigate({ to: "/" });
+        },
+      },
+    });
+  }
 
   return (
     <Card className="z-50 rounded-md rounded-t-none max-w-md">
@@ -49,8 +102,8 @@ export function SignUp() {
       </CardHeader>
 
       <CardContent>
-        <div className="grid gap-4">
-          <div className="grid grid-cols-2 gap-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
+        <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="first-name">First name</Label>
 
@@ -58,10 +111,7 @@ export function SignUp() {
                 id="first-name"
                 placeholder="Max"
                 required
-                onChange={(e) => {
-                  setFirstName(e.target.value);
-                }}
-                value={firstName}
+                {...register('firstName')}
               />
             </div>
 
@@ -72,10 +122,7 @@ export function SignUp() {
                 id="last-name"
                 placeholder="Robinson"
                 required
-                onChange={(e) => {
-                  setLastName(e.target.value);
-                }}
-                value={lastName}
+                {...register('lastName')}
               />
             </div>
           </div>
@@ -88,10 +135,7 @@ export function SignUp() {
               type="email"
               placeholder="m@example.com"
               required
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
-              value={email}
+              {...register('email')}
             />
           </div>
 
@@ -101,8 +145,7 @@ export function SignUp() {
             <Input
               id="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register('password')}
               autoComplete="new-password"
               placeholder="Password"
             />
@@ -114,25 +157,27 @@ export function SignUp() {
             <Input
               id="password_confirmation"
               type="password"
-              value={passwordConfirmation}
-              onChange={(e) => setPasswordConfirmation(e.target.value)}
+              {...register('confirmPassword')}
               autoComplete="new-password"
               placeholder="Confirm Password"
             />
+            { errors.confirmPassword && (
+              <Typography className="text-muted-foreground" variant='small'>{errors.confirmPassword.message}</Typography>
+            )}
           </div>
 
-          <div className="grid gap-2">
+          {/* <div className="grid gap-2">
             <Label htmlFor="image">Profile Image (optional)</Label>
 
             <div className="flex items-end gap-4">
               {imagePreview && (
                 <div className="relative w-16 h-16 rounded-sm overflow-hidden">
-                  {/*<Image TODO: also refactor out of next js pattern
+                  <Image
                     src={imagePreview}
                     alt="Profile preview"
                     layout="fill"
                     objectFit="cover"
-                  /> */}
+                  />
                 </div>
               )}
 
@@ -156,35 +201,12 @@ export function SignUp() {
                 )}
               </div>
             </div>
-          </div>
+          </div> */}
 
           <Button
             type="submit"
             className="w-full"
             disabled={loading}
-            onClick={async () => {
-              await signUp.email({
-                email,
-                password,
-                name: `${firstName} ${lastName}`,
-                image: image ? await convertImageToBase64(image) : "",
-                callbackURL: "/dashboard",
-                fetchOptions: {
-                  onResponse: () => {
-                    setLoading(false);
-                  },
-                  onRequest: () => {
-                    setLoading(true);
-                  },
-                  onError: (ctx) => {
-                    toast.error(ctx.error.message);
-                  },
-                  onSuccess: async () => {
-                    navigate({ to: "/" });
-                  },
-                },
-              });
-            }}
           >
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
@@ -192,7 +214,7 @@ export function SignUp() {
               "Create an account"
             )}
           </Button>
-        </div>
+        </form> 
       </CardContent>
 
       <CardFooter>
@@ -211,16 +233,4 @@ export function SignUp() {
       </CardFooter>
     </Card>
   );
-}
-
-async function convertImageToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onloadend = () => resolve(reader.result as string);
-
-    reader.onerror = reject;
-
-    reader.readAsDataURL(file);
-  });
 }

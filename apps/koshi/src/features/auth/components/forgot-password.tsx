@@ -9,45 +9,39 @@ import {
 } from "@cire/ui/components/card";
 import { Input } from "@cire/ui/components/input";
 import { Label } from "@cire/ui/components/label";
-import { Checkbox } from "@cire/ui/components/checkbox";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { signIn } from "@/lib/better-auth";
-import { Link } from "@tanstack/react-router";
+import { forgetPassword } from "@/lib/better-auth";
 import { toast } from "sonner";
 
-const signInSchema = z.object({
+const forgotPasswordSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(1),
-  rememberMe: z.boolean(),
 });
 
-type SignInData = z.infer<typeof signInSchema>;
+type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;
 
-export function SignInFormCard() {
+export function ForgotPasswordFormCard() {
   const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    setValue,
+    // formState: { errors, defaultValues },
   } = useForm({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
       email: "",
-      password: "",
-      rememberMe: false,
     },
   });
 
-  const onSubmit = async (data: SignInData) => {
-    await signIn.email(
+  const onSubmit = async (data: ForgotPasswordData) => {
+    await forgetPassword(
       {
         ...data,
-        callbackURL: "/",
+        redirectTo: `${import.meta.env.VITE_CLIENT_BASE_URL}/auth/reset-password`
       },
       {
         onRequest: () => {
@@ -55,6 +49,7 @@ export function SignInFormCard() {
         },
         onResponse: () => {
           setLoading(false);
+          toast.success("Check your email")
         },
         onError: (ctx) => {
           toast.error(ctx.error.message);
@@ -66,9 +61,9 @@ export function SignInFormCard() {
   return (
     <Card className="max-w-md">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Forgot Password</CardTitle>
         <CardDescription className="text-xs md:text-sm">
-          Enter your email below to login to your account
+          Enter your email below to recover your password
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -84,39 +79,11 @@ export function SignInFormCard() {
             />
           </div>
 
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                to="/auth/forgot-password"
-                className="ml-auto inline-block text-sm underline"
-              >
-                Forgot your password?
-              </Link>
-            </div>
-
-            <Input
-              id="password"
-              type="password"
-              {...register("password")}
-              placeholder="password"
-              autoComplete="password"
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Checkbox 
-              id="remember"
-              onCheckedChange={(val: boolean) => setValue('rememberMe', val)}  
-            />
-            <Label htmlFor="remember">Remember me</Label>
-          </div>
-
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
-              <p> Login </p>
+              <p> Submit </p>
             )}
           </Button>
         </form>

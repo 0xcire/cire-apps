@@ -2,7 +2,7 @@ import { signOut } from "@/lib/better-auth";
 import { Button } from "@cire/ui/components/button";
 import { useNavigate } from "@tanstack/react-router";
 
-export function SignOut() {
+export function SignOutButton() {
   const navigate = useNavigate();
   return (
     <Button

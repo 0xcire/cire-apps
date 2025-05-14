@@ -1,3 +1,12 @@
+// TODO: example import ordering
+import { useState } from "react";
+import { Link, useSearch } from "@tanstack/react-router";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
+import { resetPassword } from "@/lib/better-auth";
 import { Button } from "@cire/ui/components/button";
 import {
   Card,
@@ -9,45 +18,37 @@ import {
 } from "@cire/ui/components/card";
 import { Input } from "@cire/ui/components/input";
 import { Label } from "@cire/ui/components/label";
-import { Checkbox } from "@cire/ui/components/checkbox";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { signIn } from "@/lib/better-auth";
-import { Link } from "@tanstack/react-router";
-import { toast } from "sonner";
 
-const signInSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(1),
-  rememberMe: z.boolean(),
+import { Loader2 } from "lucide-react";
+
+
+const resetPasswordSchema = z.object({
+  newPassword: z.string().min(1),
 });
 
-type SignInData = z.infer<typeof signInSchema>;
+type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 
-export function SignInFormCard() {
+export function ResetPasswordFormCard() {
+  const { token, error } = useSearch({
+    from: '/auth/reset-password'
+  });
   const [loading, setLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
-    setValue,
   } = useForm({
-    resolver: zodResolver(signInSchema),
+    resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
+      newPassword: "",
     },
   });
 
-  const onSubmit = async (data: SignInData) => {
-    await signIn.email(
+  const onSubmit = async (data: ResetPasswordData) => {
+    await resetPassword(
       {
         ...data,
-        callbackURL: "/",
+        token,
       },
       {
         onRequest: () => {
@@ -63,10 +64,26 @@ export function SignInFormCard() {
     );
   };
 
+  if (error === "INVALID_TOKEN" || !token) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg md:text-xl">Token Expired!</CardTitle>
+          <CardDescription className="text-xs md:text-sm">
+            Click the link below to try again
+        </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Link to="/auth/forgot-password">Reset Password</Link>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card className="max-w-md">
       <CardHeader>
-        <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+        <CardTitle className="text-lg md:text-xl">Reset Password</CardTitle>
         <CardDescription className="text-xs md:text-sm">
           Enter your email below to login to your account
         </CardDescription>
@@ -74,49 +91,21 @@ export function SignInFormCard() {
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="newPassword">New Password</Label>
             <Input
-              id="email"
-              type="email"
-              {...register("email")}
-              placeholder="m@example.com"
-              required
-            />
-          </div>
-
-          <div className="grid gap-2">
-            <div className="flex items-center">
-              <Label htmlFor="password">Password</Label>
-              <Link
-                to="/auth/forgot-password"
-                className="ml-auto inline-block text-sm underline"
-              >
-                Forgot your password?
-              </Link>
-            </div>
-
-            <Input
-              id="password"
+              id="newPassword"
               type="password"
-              {...register("password")}
+              {...register("newPassword")}
               placeholder="password"
               autoComplete="password"
             />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Checkbox 
-              id="remember"
-              onCheckedChange={(val: boolean) => setValue('rememberMe', val)}  
-            />
-            <Label htmlFor="remember">Remember me</Label>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
-              <p> Login </p>
+              <p> Submit </p>
             )}
           </Button>
         </form>
