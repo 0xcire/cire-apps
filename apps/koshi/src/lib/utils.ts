@@ -1,5 +1,10 @@
-import { clsx, type ClassValue } from "clsx";
-import { twMerge } from "tailwind-merge";
+import { clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import { redirect } from '@tanstack/react-router';
+
+import type { ClassValue } from 'clsx';
+import type { ParsedLocation } from '@tanstack/react-router';
+import { getSession } from './better-auth';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -15,4 +20,20 @@ export async function convertImageToBase64(file: File): Promise<string> {
 
     reader.readAsDataURL(file);
   });
+}
+
+export async function authGuard(location: ParsedLocation<{}>) {
+  const { data, error } = await getSession();
+  if (!data || error) {
+    throw redirect({
+      to: '/auth/sign-in',
+      search: {
+        redirect: location.href,
+      },
+    });
+  }
+}
+
+export function formatNumber(n: number, d: number) {
+  return n.toLocaleString('en-US', { maximumFractionDigits: d });
 }
