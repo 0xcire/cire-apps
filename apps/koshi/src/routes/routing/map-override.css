@@ -1,0 +1,16 @@
+.mapboxgl-popup-content {
+  padding: 0;
+}
+
+.mapboxgl-popup-tip {
+  border: 10px solid #0000;
+  height: 0;
+  width: 0;
+  z-index: 1;
+}
+
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip {
+  align-self: center;
+  border-bottom: none;
+  border-top-color: var(--popover);
+}
