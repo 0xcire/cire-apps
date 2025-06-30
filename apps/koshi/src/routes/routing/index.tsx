@@ -1,8 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 
-import { RoutingView } from '@/features/routing/components/routing-view';
-import { authGuard } from '../../lib/utils';
+import { RoutingPageView } from '@/features/routing/components/routing-page-view';
+import { authGuard } from '@/lib/utils';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './map-override.css';
@@ -29,6 +29,8 @@ export const optionalSearchParams = z.object({
   routingMethod: z.union([z.enum(['safe', 'normal', 'risky']), z.undefined()]),
 });
 
+export type RoutingSearchParams = z.infer<typeof optionalSearchParams>;
+
 export type SearchParamKeys = keyof z.infer<typeof optionalSearchParams>;
 
 export const Route = createFileRoute('/routing/')({
@@ -38,5 +40,5 @@ export const Route = createFileRoute('/routing/')({
 });
 
 function RouteComponent() {
-  return <RoutingView />;
+  return <RoutingPageView />;
 }
