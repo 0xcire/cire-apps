@@ -1,10 +1,12 @@
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { redirect } from '@tanstack/react-router';
+import { getSession } from './better-auth';
 
 import type { ClassValue } from 'clsx';
 import type { ParsedLocation } from '@tanstack/react-router';
-import { getSession } from './better-auth';
+
+import type { Vehicle } from '../features/vehicles/api/methods';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -36,4 +38,28 @@ export async function authGuard(location: ParsedLocation<{}>) {
 
 export function formatNumber(n: number, d: number) {
   return n.toLocaleString('en-US', { maximumFractionDigits: d });
+}
+
+export function getVehicleDisplayName(vehicle: Vehicle | undefined) {
+  return vehicle ? `${vehicle.year} ${vehicle.make} ${vehicle.model}` : '';
+}
+
+/**
+ * For a time value of 'xy', if x === 0, return y, else return xy
+ */
+function noPrefix(s: string) {
+  return s[0] === '0' ? s[1] : s;
+}
+
+/**
+ * convert seconds format to 'X h YY min'
+ */
+export function convertSecondsToHumanReadableFormat(seconds: number) {
+  //@ts-expect-error type
+  const date = new Date(null);
+  date.setSeconds(seconds);
+  const time = date.toISOString().substring(11, 19);
+  const split = time.split(':');
+
+  return `${noPrefix(split[0])} h ${noPrefix(split[1])} min`;
 }
