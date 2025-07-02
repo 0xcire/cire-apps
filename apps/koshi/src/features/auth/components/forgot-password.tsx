@@ -1,4 +1,4 @@
-import { Button } from "@cire/ui/components/button";
+import { Button } from '@cire/ui/components/button';
 import {
   Card,
   CardContent,
@@ -6,16 +6,16 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@cire/ui/components/card";
-import { Input } from "@cire/ui/components/input";
-import { Label } from "@cire/ui/components/label";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { forgetPassword } from "@/lib/better-auth";
-import { toast } from "sonner";
+} from '@cire/ui/components/card';
+import { Input } from '@cire/ui/components/input';
+import { Label } from '@cire/ui/components/label';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { forgetPassword } from '@/lib/better-auth';
+import { toast } from '@cire/ui/components/sonner';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email(),
@@ -33,7 +33,7 @@ export function ForgotPasswordFormCard() {
   } = useForm({
     resolver: zodResolver(forgotPasswordSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   });
 
@@ -41,7 +41,7 @@ export function ForgotPasswordFormCard() {
     await forgetPassword(
       {
         ...data,
-        redirectTo: `${import.meta.env.VITE_CLIENT_BASE_URL}/auth/reset-password`
+        redirectTo: `${import.meta.env.VITE_CLIENT_BASE_URL}/auth/reset-password`,
       },
       {
         onRequest: () => {
@@ -49,7 +49,7 @@ export function ForgotPasswordFormCard() {
         },
         onResponse: () => {
           setLoading(false);
-          toast.success("Check your email")
+          toast.success('Check your email');
         },
         onError: (ctx) => {
           toast.error(ctx.error.message);
@@ -73,7 +73,7 @@ export function ForgotPasswordFormCard() {
             <Input
               id="email"
               type="email"
-              {...register("email")}
+              {...register('email')}
               placeholder="m@example.com"
               required
             />
@@ -91,7 +91,7 @@ export function ForgotPasswordFormCard() {
       <CardFooter>
         <div className="flex justify-center w-full border-t py-4">
           <p className="text-center text-xs text-neutral-500">
-            Powered by{" "}
+            Powered by{' '}
             <a
               href="https://better-auth.com"
               className="underline"

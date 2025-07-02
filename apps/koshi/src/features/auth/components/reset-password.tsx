@@ -1,13 +1,12 @@
-// TODO: example import ordering
-import { useState } from "react";
-import { Link, useSearch } from "@tanstack/react-router";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+import { useState } from 'react';
+import { Link, useSearch } from '@tanstack/react-router';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from '@cire/ui/components/sonner';
 
-import { resetPassword } from "@/lib/better-auth";
-import { Button } from "@cire/ui/components/button";
+import { resetPassword } from '@/lib/better-auth';
+import { Button } from '@cire/ui/components/button';
 import {
   Card,
   CardContent,
@@ -15,12 +14,11 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@cire/ui/components/card";
-import { Input } from "@cire/ui/components/input";
-import { Label } from "@cire/ui/components/label";
+} from '@cire/ui/components/card';
+import { Input } from '@cire/ui/components/input';
+import { Label } from '@cire/ui/components/label';
 
-import { Loader2 } from "lucide-react";
-
+import { Loader2 } from 'lucide-react';
 
 const resetPasswordSchema = z.object({
   newPassword: z.string().min(1),
@@ -30,17 +28,14 @@ type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 
 export function ResetPasswordFormCard() {
   const { token, error } = useSearch({
-    from: '/auth/reset-password'
+    from: '/auth/reset-password',
   });
   const [loading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-  } = useForm({
+  const { register, handleSubmit } = useForm({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
-      newPassword: "",
+      newPassword: '',
     },
   });
 
@@ -64,20 +59,20 @@ export function ResetPasswordFormCard() {
     );
   };
 
-  if (error === "INVALID_TOKEN" || !token) {
+  if (error === 'INVALID_TOKEN' || !token) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="text-lg md:text-xl">Token Expired!</CardTitle>
           <CardDescription className="text-xs md:text-sm">
             Click the link below to try again
-        </CardDescription>
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <Link to="/auth/forgot-password">Reset Password</Link>
         </CardContent>
       </Card>
-    )
+    );
   }
 
   return (
@@ -95,7 +90,7 @@ export function ResetPasswordFormCard() {
             <Input
               id="newPassword"
               type="password"
-              {...register("newPassword")}
+              {...register('newPassword')}
               placeholder="password"
               autoComplete="password"
             />
@@ -113,7 +108,7 @@ export function ResetPasswordFormCard() {
       <CardFooter>
         <div className="flex justify-center w-full border-t py-4">
           <p className="text-center text-xs text-neutral-500">
-            Powered by{" "}
+            Powered by{' '}
             <a
               href="https://better-auth.com"
               className="underline"

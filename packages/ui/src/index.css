@@ -1,13 +1,14 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@plugin 'tailwind-scrollbar';
 @source "../../../apps/**/*.{ts,tsx}";
 @source "../../../components/**/*.{ts,tsx}";
 @source "../**/*.{ts,tsx}";
 
 @font-face {
-  font-family: "Merriweather";
+  font-family: 'Merriweather';
   display: swap;
-  src: url("../public/Merriweather.ttf");
+  src: url('../public/Merriweather.ttf');
 }
 
 @custom-variant dark (&:is(.dark *));

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Button } from "@cire/ui/components/button";
+import { useState } from 'react';
+import { Button } from '@cire/ui/components/button';
 import {
   Card,
   CardContent,
@@ -7,33 +7,33 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@cire/ui/components/card";
-import { Input } from "@cire/ui/components/input";
-import { Label } from "@cire/ui/components/label";
-import { Loader2 } from "lucide-react";
-import { signUp } from "@/lib/better-auth";
-import { toast } from "sonner";
-import { useNavigate } from "@tanstack/react-router";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Typography } from "@cire/ui/components/typography";
+} from '@cire/ui/components/card';
+import { Input } from '@cire/ui/components/input';
+import { Label } from '@cire/ui/components/label';
+import { Loader2 } from 'lucide-react';
+import { signUp } from '@/lib/better-auth';
+import { toast } from '@cire/ui/components/sonner';
+import { useNavigate } from '@tanstack/react-router';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { Typography } from '@cire/ui/components/typography';
 
-const signUpSchema = z.object({
-  firstName: z.string().min(1),
-  lastName: z.string().min(1),
-  email: z.string().email(),
-  password: z.string().min(1),
-  confirmPassword: z.string().min(1)
-})
-.refine(({ password, confirmPassword }) => password === confirmPassword, {
-  path: ["confirmPassword"],
-  message: 'Passwords do not match'
-})
-.transform(({ confirmPassword, ...data }) => data)
+const signUpSchema = z
+  .object({
+    firstName: z.string().min(1),
+    lastName: z.string().min(1),
+    email: z.string().email(),
+    password: z.string().min(1),
+    confirmPassword: z.string().min(1),
+  })
+  .refine(({ password, confirmPassword }) => password === confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Passwords do not match',
+  })
+  .transform(({ confirmPassword, ...data }) => data);
 
 type SignUpData = z.infer<typeof signUpSchema>;
-
 
 // TODO: lot's of commented code related to image upload. need to establish s3 connection or configure minio on server
 export function SignUpFormCard() {
@@ -45,17 +45,17 @@ export function SignUpFormCard() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
   } = useForm({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
       firstName: '',
       lastName: '',
-      email: "",
-      password: "",
-      confirmPassword: ""
-    }
-  })
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+  });
 
   // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   //   const file = e.target.files?.[0];
@@ -86,11 +86,11 @@ export function SignUpFormCard() {
           toast.error(ctx.error.message);
         },
         onSuccess: async () => {
-          navigate({ to: "/" });
+          navigate({ to: '/' });
         },
       },
     });
-  }
+  };
 
   return (
     <Card className="z-50 rounded-md rounded-t-none max-w-md">
@@ -103,7 +103,7 @@ export function SignUpFormCard() {
 
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4">
-        <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div className="grid gap-2">
               <Label htmlFor="first-name">First name</Label>
 
@@ -161,8 +161,10 @@ export function SignUpFormCard() {
               autoComplete="new-password"
               placeholder="Confirm Password"
             />
-            { errors.confirmPassword && (
-              <Typography className="text-muted-foreground" variant='small'>{errors.confirmPassword.message}</Typography>
+            {errors.confirmPassword && (
+              <Typography className="text-muted-foreground" variant="small">
+                {errors.confirmPassword.message}
+              </Typography>
             )}
           </div>
 
@@ -203,24 +205,20 @@ export function SignUpFormCard() {
             </div>
           </div> */}
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? (
               <Loader2 size={16} className="animate-spin" />
             ) : (
-              "Create an account"
+              'Create an account'
             )}
           </Button>
-        </form> 
+        </form>
       </CardContent>
 
       <CardFooter>
         <div className="flex justify-center w-full border-t py-4">
           <p className="text-center text-xs text-neutral-500">
-            Secured by{" "}
+            Secured by{' '}
             <a
               href="https://better-auth.com"
               className="text-orange-400"

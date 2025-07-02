@@ -12,6 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as VehiclesIndexImport } from './routes/vehicles/index'
+import { Route as StationsIndexImport } from './routes/stations/index'
+import { Route as RoutingIndexImport } from './routes/routing/index'
+import { Route as BlendCalculatorIndexImport } from './routes/blend-calculator/index'
 import { Route as AuthSignUpImport } from './routes/auth/sign-up'
 import { Route as AuthSignInImport } from './routes/auth/sign-in'
 import { Route as AuthResetPasswordImport } from './routes/auth/reset-password'
@@ -22,6 +26,30 @@ import { Route as AuthForgotPasswordImport } from './routes/auth/forgot-password
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const VehiclesIndexRoute = VehiclesIndexImport.update({
+  id: '/vehicles/',
+  path: '/vehicles/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const StationsIndexRoute = StationsIndexImport.update({
+  id: '/stations/',
+  path: '/stations/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const RoutingIndexRoute = RoutingIndexImport.update({
+  id: '/routing/',
+  path: '/routing/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BlendCalculatorIndexRoute = BlendCalculatorIndexImport.update({
+  id: '/blend-calculator/',
+  path: '/blend-calculator/',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -88,6 +116,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSignUpImport
       parentRoute: typeof rootRoute
     }
+    '/blend-calculator/': {
+      id: '/blend-calculator/'
+      path: '/blend-calculator'
+      fullPath: '/blend-calculator'
+      preLoaderRoute: typeof BlendCalculatorIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/routing/': {
+      id: '/routing/'
+      path: '/routing'
+      fullPath: '/routing'
+      preLoaderRoute: typeof RoutingIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/stations/': {
+      id: '/stations/'
+      path: '/stations'
+      fullPath: '/stations'
+      preLoaderRoute: typeof StationsIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/vehicles/': {
+      id: '/vehicles/'
+      path: '/vehicles'
+      fullPath: '/vehicles'
+      preLoaderRoute: typeof VehiclesIndexImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -99,6 +155,10 @@ export interface FileRoutesByFullPath {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/blend-calculator': typeof BlendCalculatorIndexRoute
+  '/routing': typeof RoutingIndexRoute
+  '/stations': typeof StationsIndexRoute
+  '/vehicles': typeof VehiclesIndexRoute
 }
 
 export interface FileRoutesByTo {
@@ -107,6 +167,10 @@ export interface FileRoutesByTo {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/blend-calculator': typeof BlendCalculatorIndexRoute
+  '/routing': typeof RoutingIndexRoute
+  '/stations': typeof StationsIndexRoute
+  '/vehicles': typeof VehiclesIndexRoute
 }
 
 export interface FileRoutesById {
@@ -116,6 +180,10 @@ export interface FileRoutesById {
   '/auth/reset-password': typeof AuthResetPasswordRoute
   '/auth/sign-in': typeof AuthSignInRoute
   '/auth/sign-up': typeof AuthSignUpRoute
+  '/blend-calculator/': typeof BlendCalculatorIndexRoute
+  '/routing/': typeof RoutingIndexRoute
+  '/stations/': typeof StationsIndexRoute
+  '/vehicles/': typeof VehiclesIndexRoute
 }
 
 export interface FileRouteTypes {
@@ -126,6 +194,10 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/blend-calculator'
+    | '/routing'
+    | '/stations'
+    | '/vehicles'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +205,10 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/blend-calculator'
+    | '/routing'
+    | '/stations'
+    | '/vehicles'
   id:
     | '__root__'
     | '/'
@@ -140,6 +216,10 @@ export interface FileRouteTypes {
     | '/auth/reset-password'
     | '/auth/sign-in'
     | '/auth/sign-up'
+    | '/blend-calculator/'
+    | '/routing/'
+    | '/stations/'
+    | '/vehicles/'
   fileRoutesById: FileRoutesById
 }
 
@@ -149,6 +229,10 @@ export interface RootRouteChildren {
   AuthResetPasswordRoute: typeof AuthResetPasswordRoute
   AuthSignInRoute: typeof AuthSignInRoute
   AuthSignUpRoute: typeof AuthSignUpRoute
+  BlendCalculatorIndexRoute: typeof BlendCalculatorIndexRoute
+  RoutingIndexRoute: typeof RoutingIndexRoute
+  StationsIndexRoute: typeof StationsIndexRoute
+  VehiclesIndexRoute: typeof VehiclesIndexRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -157,6 +241,10 @@ const rootRouteChildren: RootRouteChildren = {
   AuthResetPasswordRoute: AuthResetPasswordRoute,
   AuthSignInRoute: AuthSignInRoute,
   AuthSignUpRoute: AuthSignUpRoute,
+  BlendCalculatorIndexRoute: BlendCalculatorIndexRoute,
+  RoutingIndexRoute: RoutingIndexRoute,
+  StationsIndexRoute: StationsIndexRoute,
+  VehiclesIndexRoute: VehiclesIndexRoute,
 }
 
 export const routeTree = rootRoute
@@ -173,7 +261,11 @@ export const routeTree = rootRoute
         "/auth/forgot-password",
         "/auth/reset-password",
         "/auth/sign-in",
-        "/auth/sign-up"
+        "/auth/sign-up",
+        "/blend-calculator/",
+        "/routing/",
+        "/stations/",
+        "/vehicles/"
       ]
     },
     "/": {
@@ -190,6 +282,18 @@ export const routeTree = rootRoute
     },
     "/auth/sign-up": {
       "filePath": "auth/sign-up.tsx"
+    },
+    "/blend-calculator/": {
+      "filePath": "blend-calculator/index.tsx"
+    },
+    "/routing/": {
+      "filePath": "routing/index.tsx"
+    },
+    "/stations/": {
+      "filePath": "stations/index.tsx"
+    },
+    "/vehicles/": {
+      "filePath": "vehicles/index.tsx"
     }
   }
 }

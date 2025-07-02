@@ -1,4 +1,4 @@
-import { Button } from "@cire/ui/components/button";
+import { Button } from '@cire/ui/components/button';
 import {
   Card,
   CardContent,
@@ -6,18 +6,18 @@ import {
   CardTitle,
   CardDescription,
   CardFooter,
-} from "@cire/ui/components/card";
-import { Input } from "@cire/ui/components/input";
-import { Label } from "@cire/ui/components/label";
-import { Checkbox } from "@cire/ui/components/checkbox";
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { Loader2 } from "lucide-react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { signIn } from "@/lib/better-auth";
-import { Link } from "@tanstack/react-router";
-import { toast } from "sonner";
+} from '@cire/ui/components/card';
+import { Input } from '@cire/ui/components/input';
+import { Label } from '@cire/ui/components/label';
+import { Checkbox } from '@cire/ui/components/checkbox';
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { signIn } from '@/lib/better-auth';
+import { Link, useLinkProps } from '@tanstack/react-router';
+import { toast } from '@cire/ui/components/sonner';
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -30,15 +30,13 @@ type SignInData = z.infer<typeof signInSchema>;
 export function SignInFormCard() {
   const [loading, setLoading] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    setValue,
-  } = useForm({
+  const { href } = useLinkProps({ to: '/routing' });
+
+  const { register, handleSubmit, setValue } = useForm({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
       rememberMe: false,
     },
   });
@@ -47,7 +45,7 @@ export function SignInFormCard() {
     await signIn.email(
       {
         ...data,
-        callbackURL: "/",
+        callbackURL: href,
       },
       {
         onRequest: () => {
@@ -57,7 +55,10 @@ export function SignInFormCard() {
           setLoading(false);
         },
         onError: (ctx) => {
-          toast.error(ctx.error.message);
+          toast.error(
+            ctx.error.message ??
+              'There was an issue signing in. Please try again.',
+          );
         },
       },
     );
@@ -78,7 +79,7 @@ export function SignInFormCard() {
             <Input
               id="email"
               type="email"
-              {...register("email")}
+              {...register('email')}
               placeholder="m@example.com"
               required
             />
@@ -98,16 +99,16 @@ export function SignInFormCard() {
             <Input
               id="password"
               type="password"
-              {...register("password")}
+              {...register('password')}
               placeholder="password"
               autoComplete="password"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <Checkbox 
+            <Checkbox
               id="remember"
-              onCheckedChange={(val: boolean) => setValue('rememberMe', val)}  
+              onCheckedChange={(val: boolean) => setValue('rememberMe', val)}
             />
             <Label htmlFor="remember">Remember me</Label>
           </div>
@@ -124,7 +125,7 @@ export function SignInFormCard() {
       <CardFooter>
         <div className="flex justify-center w-full border-t py-4">
           <p className="text-center text-xs text-neutral-500">
-            Powered by{" "}
+            Powered by{' '}
             <a
               href="https://better-auth.com"
               className="underline"

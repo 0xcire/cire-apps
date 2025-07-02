@@ -23,7 +23,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@cire/ui/*": ["../../packages/ui/src/*"]
+      "@cire/ui/*": ["../../packages/ui/src/*"],
+      "react": ["./node_modules/@types/react"]
     }
   }
 }
