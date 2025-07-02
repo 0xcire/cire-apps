@@ -1,8 +1,13 @@
 import ky, { HTTPError } from 'ky';
-import type { GenerateRouteResponse } from './types';
+import type {
+  GenerateRouteResponse,
+  SaveRouteOpts,
+  SaveRouteResponse,
+} from './types';
 import type { GenerateRouteOpts } from './types';
 
-export async function getRoute(opts: Partial<GenerateRouteOpts>) {
+export async function generateRoute(opts: Partial<GenerateRouteOpts>) {
+  // @ts-expect-error type
   const q = new URLSearchParams(opts).toString();
 
   try {
@@ -19,6 +24,26 @@ export async function getRoute(opts: Partial<GenerateRouteOpts>) {
         credentials: 'include',
       })
       .json<GenerateRouteResponse>();
+  } catch (error) {
+    if (error instanceof HTTPError) {
+      throw await error.response.json();
+    }
+
+    throw error;
+  }
+}
+
+export async function saveRoute(opts: SaveRouteOpts) {
+  try {
+    return await ky
+      .post(`${import.meta.env.VITE_API_BASE_URL}/routes`, {
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        json: opts,
+      })
+      .json<SaveRouteResponse>();
   } catch (error) {
     if (error instanceof HTTPError) {
       throw await error.response.json();

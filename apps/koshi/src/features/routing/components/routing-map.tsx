@@ -6,15 +6,18 @@ import {
   Layer,
   Marker,
   Source,
+  useMap,
   type LayerProps,
 } from 'react-map-gl/mapbox';
 import { wktToGeoJSON } from '@terraformer/wkt';
 
-import { useGetRoute } from '../api/queries';
+import { useGenerateRoute } from '../api/queries';
 
 import { StationMarker } from './station-marker';
 
 import { useTheme } from '@cire/ui/components/theme-provider';
+
+import type { LineString } from 'geojson';
 
 const routeLineLayerStyle: LayerProps = {
   id: 'route',
@@ -32,6 +35,9 @@ const routeLineLayerStyle: LayerProps = {
 
 export function RoutingMap() {
   const { theme } = useTheme();
+  const map = useMap();
+  const mapRef = map.routing_map?.getMap();
+
   const {
     startLocation,
     endLocation,
@@ -42,15 +48,11 @@ export function RoutingMap() {
     from: '/routing/',
   });
 
-  const { data, refetch } = useGetRoute({
+  const { data, refetch } = useGenerateRoute({
     startLocation,
     endLocation,
     vehicleId,
   });
-
-  useEffect(() => {
-    if (startLocation && endLocation && vehicleId) refetch();
-  }, []);
 
   const routeGeoJson = useMemo(() => {
     if (!data) {
@@ -60,7 +62,29 @@ export function RoutingMap() {
       };
       return placeholder;
     }
-    return wktToGeoJSON(data.routePolylineAsWkt);
+
+    return wktToGeoJSON(data.routePolylineAsWkt) as LineString;
+  }, [data]);
+
+  useEffect(() => {
+    if (startLocation && endLocation && vehicleId) refetch();
+  }, []);
+
+  useEffect(() => {
+    const appxCenter =
+      routeGeoJson.coordinates[
+        Math.floor((routeGeoJson.coordinates.length - 1) / 2)
+      ];
+
+    if (appxCenter) return;
+
+    mapRef?.flyTo({
+      center: {
+        lng: appxCenter[0],
+        lat: appxCenter[1],
+      },
+      zoom: 5,
+    });
   }, [data]);
 
   return (

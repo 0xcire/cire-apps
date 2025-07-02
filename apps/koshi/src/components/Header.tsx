@@ -4,7 +4,8 @@ import { useSession } from '../lib/better-auth';
 
 // this is getting deleted
 export default function Header() {
-  const { data, error } = useSession();
+  const { data } = useSession();
+
   return (
     <header className=" p-2 flex gap-2 bg-white text-black justify-between">
       <nav className="flex flex-row">
@@ -20,6 +21,7 @@ export default function Header() {
           {data && (
             <>
               <Link to="/routing">Create a route</Link>
+              <Link to="/routes">View routes</Link>
               <Link to="/stations">View stations</Link>
               <Link to="/vehicles">Your vehicles</Link>
             </>

@@ -1,9 +1,12 @@
+import type { Vehicle } from '@/features//vehicles/api/methods';
+import type { User } from 'better-auth/types';
+
 export interface GenerateRouteOpts {
   startLocation: string;
   endLocation: string;
   vehicleId: string;
   routingMethod?: string;
-  avoidToll?: string;
+  avoidToll?: boolean;
 }
 
 export interface Station {
@@ -40,6 +43,24 @@ export interface Station {
   };
 }
 
+export interface Route {
+  id: string;
+  originLocation: string;
+  endLocation: string;
+  routingMethod: string;
+  avoidToll: boolean;
+  appxRouteLinestring: string;
+  startedAt?: Date;
+  endedAt?: Date;
+  appxRouteLengthInMeters: number;
+  appxRouteLengthInSeconds: number;
+  realDistanceTraveled: number;
+  realTimeSpent: number;
+  user: User; // ?
+  vehicle: Vehicle;
+  stations: Station[];
+}
+
 export interface GenerateRouteResponse {
   routePolylineAsWkt: string;
   stations: Station[];
@@ -47,4 +68,20 @@ export interface GenerateRouteResponse {
     secondsPerSegment: number[];
     metersPerSegment: number[];
   };
+}
+
+export interface SaveRouteOpts {
+  startLocation: string;
+  endLocation: string;
+  vehicleId: string;
+  stationIds: number[];
+  appxRouteLineString: string;
+  appxRouteLengthInMeters: number;
+  appxRouteLengthInSeconds: number;
+  routingMethod?: string;
+  avoidToll?: boolean;
+}
+
+export interface SaveRouteResponse {
+  route: Route;
 }
