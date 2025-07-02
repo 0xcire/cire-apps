@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 
 import { useVehicles } from '@/features/vehicles/api/queries';
-import { useGetRoute } from '../api/queries';
+import { useGenerateRoute, useSaveRoute } from '../api/queries';
 
 import { useMediaQuery } from 'usehooks-ts';
-import { toast } from 'sonner';
+import { toast } from '@cire/ui/components/sonner';
 import { twMerge } from 'tailwind-merge';
 
 import { EndpointsGeocoder } from './endpoints-geocoder';
@@ -33,6 +33,7 @@ import {
 } from '@cire/ui/components/drawer';
 import { Button } from '@cire/ui/components/button';
 import { Separator } from '@cire/ui/components/separator';
+// import { Switch } from '@cire/ui/components/switch';
 
 import { Route } from 'lucide-react';
 
@@ -41,6 +42,8 @@ import { ResponsiveVehicleCombobox } from './responsive-vehicle-combobox';
 import type { SearchParamKeys } from '@/routes/routing';
 import type { Vehicle } from '@/features/vehicles/api/methods';
 import type { GenerateRouteResponse } from '../api/types';
+import type { RouteDurationOverview } from '../types';
+// import { Label } from '@cire/ui/components/label';
 
 export function ResponsiveRoutingSidebar() {
   const [open, setOpen] = useState(false);
@@ -57,7 +60,9 @@ export function ResponsiveRoutingSidebar() {
   const { data: vehicles } = useVehicles();
 
   const { data, refetch, isError, error, isFetching, isRefetching } =
-    useGetRoute(params);
+    useGenerateRoute(params);
+
+  const { mutate } = useSaveRoute();
 
   const updateSearch = (searchKey: SearchParamKeys, value: unknown) => {
     navigate({ search: (prev) => ({ ...prev, [searchKey]: value }) });
@@ -66,6 +71,46 @@ export function ResponsiveRoutingSidebar() {
   useEffect(() => {
     if (isError) toast.error(error.message);
   }, [isError]);
+
+  const totalMeters =
+    data?.meta.metersPerSegment.reduce((prev, curr) => prev + curr, 0) ?? 0;
+  const totalSeconds =
+    data?.meta.secondsPerSegment.reduce((prev, curr) => prev + curr, 0) ?? 0;
+
+  const handleSaveRoute = () => {
+    if (!data) return;
+    if (s.startLocation && s.endLocation && s.vehicleId) {
+      mutate(
+        {
+          startLocation: s.startLocation,
+          endLocation: s.endLocation,
+          vehicleId: s.vehicleId,
+          stationIds: data.stations.map((s) => s.id),
+          appxRouteLineString: data.routePolylineAsWkt,
+          appxRouteLengthInMeters: totalMeters ?? 0,
+          appxRouteLengthInSeconds: totalSeconds ?? 0,
+        },
+        {
+          onSuccess: () => {
+            toast('Successfully saved route!', {
+              action: {
+                label: 'View routes',
+                onClick: () => navigate({ to: '/routes' }),
+              },
+            });
+          },
+          onSettled: () => {
+            setOpen(false);
+          },
+          onError: (err) => {
+            toast.error(err.message);
+          },
+        },
+      );
+    } else {
+      toast.error('Please re-generate your desired route before saving.');
+    }
+  };
 
   if (isDesktop) {
     return (
@@ -90,6 +135,10 @@ export function ResponsiveRoutingSidebar() {
             vehicles={vehicles}
             data={data}
             updateSearch={updateSearch}
+            overview={{
+              totalMeters,
+              totalSeconds,
+            }}
           />
 
           <SheetFooter className="mt-auto p-0">
@@ -108,7 +157,11 @@ export function ResponsiveRoutingSidebar() {
               >
                 Generate Route
               </Button>
-              {data && <Button className="flex-1">Save Route</Button>}
+              {data && (
+                <Button onClick={handleSaveRoute} className="flex-1">
+                  Save Route
+                </Button>
+              )}
             </div>
           </SheetFooter>
         </SheetContent>
@@ -139,6 +192,10 @@ export function ResponsiveRoutingSidebar() {
             vehicles={vehicles}
             data={data}
             updateSearch={updateSearch}
+            overview={{
+              totalMeters,
+              totalSeconds,
+            }}
           />
 
           <DrawerFooter className="p-0">
@@ -156,7 +213,11 @@ export function ResponsiveRoutingSidebar() {
               >
                 Generate Route
               </Button>
-              {data && <Button className="flex-1">Save Route</Button>}
+              {data && (
+                <Button className="flex-1" onClick={handleSaveRoute}>
+                  Save Route
+                </Button>
+              )}
             </div>
           </DrawerFooter>
         </div>
@@ -169,9 +230,10 @@ interface ContentProps {
   updateSearch: (searchKey: SearchParamKeys, value: unknown) => void;
   vehicles: Vehicle[] | undefined;
   data: GenerateRouteResponse | undefined;
+  overview: RouteDurationOverview;
 }
 
-function Content({ vehicles, updateSearch, data }: ContentProps) {
+function Content({ vehicles, updateSearch, data, overview }: ContentProps) {
   const s = useSearch({ from: '/routing/' });
   return (
     <>
@@ -180,6 +242,15 @@ function Content({ vehicles, updateSearch, data }: ContentProps) {
         updateSearch={updateSearch}
       />
       <EndpointsGeocoder updateSearch={updateSearch} />
+
+      {/* <div className="flex items-center space-x-2 ml-auto">
+        <Switch
+          checked={s.avoidToll}
+          onCheckedChange={() => updateSearch('avoidToll', true)}
+          id="airplane-mode"
+        />
+        <Label htmlFor="airplane-mode">Avoid Tolls</Label>
+      </div> */}
 
       <Separator />
 
@@ -192,6 +263,7 @@ function Content({ vehicles, updateSearch, data }: ContentProps) {
             ]}
             stations={data.stations}
             meta={data.meta}
+            overview={overview}
           />
         )}
       </div>

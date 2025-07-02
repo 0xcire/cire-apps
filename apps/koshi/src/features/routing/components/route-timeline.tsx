@@ -15,17 +15,20 @@ import { CONVERT_METERS_TO_MILES } from '@/constants';
 import { convertSecondsToHumanReadableFormat, formatNumber } from '@/lib/utils';
 
 import type { GenerateRouteResponse } from '../api/types';
+import type { RouteDurationOverview } from '../types';
 
 export function RouteTimeline({
   stations,
   meta,
   endpoints,
+  overview: { totalMeters, totalSeconds },
 }: Omit<GenerateRouteResponse, 'routePolylineAsWkt'> & {
   endpoints: {
     latitude?: number;
     longitude?: number;
     location: string | undefined;
   }[];
+  overview: RouteDurationOverview;
 }) {
   const startId = useId();
   const endId = useId();
@@ -37,14 +40,6 @@ export function RouteTimeline({
   ];
 
   const isDestinationNode = (idx: number) => idx === nodes.length - 1;
-
-  const totalMeters = meta.metersPerSegment.reduce((prev, curr) => {
-    return prev + curr;
-  }, 0);
-  const totalSeconds = meta.secondsPerSegment.reduce(
-    (prev, curr) => prev + curr,
-    0,
-  );
 
   return (
     <Timeline className="py-4" defaultValue={stations.length - 1}>

@@ -110,3 +110,9 @@ export const facilityTypesMap = {
   UTILITY: 'Utility',
   WORKPLACE: 'Workplace',
 };
+
+// TODO: this could be pulled out via react ctx or lib like zustand
+export interface RouteDurationOverview {
+  totalSeconds: number;
+  totalMeters: number;
+}
